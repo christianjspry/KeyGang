@@ -1,7 +1,8 @@
 ## Interface: 90205 #/run print((select(4,GetBuildInfo())))
 ## Title: KeyGang
-## Notes: A WoW Addon Project to use with friends to coordinate keystones.
+## Notes: Keystone addon that interfaces with discord bot.
 ## Author: Christian Spry
 ## Version: 0.0.1
 
 KeyGang.lua
+ApiService.lua

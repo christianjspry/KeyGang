@@ -4,7 +4,6 @@ SLASH_TEST1 = "/test"
 
 KEYSTONE_ID = 180653 -- SL mythic keystone item ID
 BAG_SLOTS = 5
-PLAYER_KEYSTONE_ENDPOINT = "https://localhost:8080"
 
 -- UNUSED
 -- Identifies the keystone in the player's bags
@@ -32,7 +31,13 @@ local function getPlayerKeystone()
   local keystoneLevel = C_MythicPlus.GetOwnedKeystoneLevel()
   local dungeonID = C_MythicPlus.GetOwnedKeystoneChallengeMapID()
   local dungeonName = C_ChallengeMode.GetMapUIInfo(dungeonID)
-  return keystoneLevel, dungeonID, dungeonName
+
+  local keystoneObj = {
+    ["level"] = keystoneLevel,
+    ["dungeonId"] = dungeonID,
+    ["dungeonName"] = dungeonName,
+  }
+  return keystoneObj
 end
 
 -- Gets the player's character information
@@ -42,36 +47,72 @@ local function getPlayerCharacterInfo()
   local race, _, raceID = UnitRace("player")
   local faction = C_CreatureInfo.GetFactionInfo(raceID)["name"]
   local realm = GetRealmName()
-  return name, class, race, faction, realm
+
+  local playerObj = {
+    ["name"] = name,
+    ["class"] = class,
+    ["race"] = race,
+    ["faction"] = faction,
+    ["realm"] = realm,
+  }
+  return playerObj
 end
 
--- psvm
+-- main handler
 local function handle_test()
 
-  -- GATHER INFO -- 
-  local _, _ = findKeystoneInBags() -- no real use for this atm
-  local keystoneLevel, dungeonID, dungeonName = getPlayerKeystone()
-  local name, class, race, faction, realm = getPlayerCharacterInfo()
+  print("slash command recognized")
 
-  print(keystoneLevel, dungeonID, dungeonName)
-  print(name, class, race, faction, realm)
+  -- GATHER INFO -- 
+  --local _, _ = findKeystoneInBags() -- no real use for this atm
+  local keystoneObj = getPlayerKeystone()
+  print("keystone information generated")
+  local playerObj = getPlayerCharacterInfo()
+  print("player information generated")
 
   local apiObject = {
-    ["player"] = {name, class, race, faction, realm},
-    ["keystone"] = {keystoneLevel, dungeonID, dungeonName},
+    ["player"] = playerObj,
+    ["keystone"] = keystoneObj,
   }
+  print("api object created")
+
+  -- for key, value in pairs(apiObject) do
+  --   for k, v in pairs(value) do
+  --     print(k, "--", v)
+  --   end
+  -- end
 
   -- API SERVICE -- 
+  print("starting api service")
   local ApiService = require "ApiService"
-  ApiService.post_PlayerAndKeystone(apiObject)
-
+  print("require success")
+  -- ApiService.getRequest("/keystones")
+  ApiService.postRequest("/info", apiObject)
+  print("api service successful")
   print("wcyd")
 end
 
+-- local testObj = {
+--   ["player"] = {
+--     ["name"] = "name",
+--     ["class"] = "class",
+--     ["race"] = "race",
+--     ["faction"] = "faction",
+--     ["realm"] = "realm",
+--   },
+--   ["keystone"] = {
+--     ["level"] = 15,
+--     ["dungeonId"] = 12312,
+--     ["dungeonName"] = "dungeonName",
+--   },
+-- }
+
+-- local ApiService = require "ApiService"
+-- --ApiService.getRequest("/players/1")
+-- ApiService.postRequest("/info", testObj)
+
+
 SlashCmdList["TEST"] = handle_test
 
-  -- TODO: try to associate character names with discord users
-  -- TODO: interface with saved instances?
-  -- TODO: web app that also interfaces with the go-api
-  -- TODO: record completed dungeon runs
-  -- TODO: Set up a discord name#3934 GUI to relate discord user to its characters
+
+
