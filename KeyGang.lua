@@ -51,16 +51,19 @@ local function handle_test()
   -- GATHER INFO -- 
   local _, _ = findKeystoneInBags() -- no real use for this atm
   local keystoneLevel, dungeonID, dungeonName = getPlayerKeystone()
-  local pName, pClass, pRace, pFaction, pRealm = getPlayerCharacterInfo()
+  local name, class, race, faction, realm = getPlayerCharacterInfo()
 
   print(keystoneLevel, dungeonID, dungeonName)
-  print(pName, pClass, pRace, pFaction, pRealm)
+  print(name, class, race, faction, realm)
 
+  local apiObject = {
+    ["player"] = {name, class, race, faction, realm},
+    ["keystone"] = {keystoneLevel, dungeonID, dungeonName},
+  }
 
   -- API SERVICE -- 
-  http_postPlayerAndKeystones()
   local ApiService = require "ApiService"
-  ApiService.post_PlayerAndKeystone()
+  ApiService.post_PlayerAndKeystone(apiObject)
 
   print("wcyd")
 end
