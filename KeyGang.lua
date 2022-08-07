@@ -4,6 +4,7 @@ SLASH_TEST1 = "/test"
 
 KEYSTONE_ID = 180653 -- SL mythic keystone item ID
 BAG_SLOTS = 5
+PLAYER_KEYSTONE_ENDPOINT = "https://localhost:8080"
 
 -- UNUSED
 -- Identifies the keystone in the player's bags
@@ -46,12 +47,20 @@ end
 
 -- psvm
 local function handle_test()
+
+  -- GATHER INFO -- 
   local _, _ = findKeystoneInBags() -- no real use for this atm
   local keystoneLevel, dungeonID, dungeonName = getPlayerKeystone()
   local pName, pClass, pRace, pFaction, pRealm = getPlayerCharacterInfo()
 
   print(keystoneLevel, dungeonID, dungeonName)
   print(pName, pClass, pRace, pFaction, pRealm)
+
+
+  -- API SERVICE -- 
+  http_postPlayerAndKeystones()
+  local ApiService = require "ApiService"
+  ApiService.post_PlayerAndKeystone()
 
   print("wcyd")
 end
