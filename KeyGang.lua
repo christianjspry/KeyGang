@@ -57,3 +57,9 @@ local function handle_test()
 end
 
 SlashCmdList["TEST"] = handle_test
+
+  -- TODO: try to associate character names with discord users
+  -- TODO: interface with saved instances?
+  -- TODO: web app that also interfaces with the go-api
+  -- TODO: record completed dungeon runs
+  -- TODO: Set up a discord name#3934 GUI to relate discord user to its characters
